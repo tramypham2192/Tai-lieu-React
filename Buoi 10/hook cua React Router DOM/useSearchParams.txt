@@ -1,0 +1,136 @@
+Trong folder HookDemo, tao folder UseSearchParamsDemo, tao file UseSearchParamsDemo
+Vi du nay minh se lam chuc nang search san pham. Yeu cau cua bai nay la, khi minh type vao
+o search, thi sau khi Enter, noi dung minh type phai gui len url -> phai dung 
+useSearchParam, tinh nam setParams cua no se gui noi dung minh type len url.
+
+B1: SET UP
+
+a) Vao index.js tao route:
+<Route path='search' element={<UseSearchParamsDemo />}></Route>
+Vao HomeTemplate:
+<li><NavLink className="dropdown-item" to="search" >Use search params</NavLink></li>
+b) Code giao dien cho UseSearchParamsDemo.jsx:
+import React from 'react'
+import { NavLink } from 'react-router-dom'
+
+const UseSearchParamsDemo = () => {
+  return (
+    <div className='container'>
+        <form onSubmit={handleSubmit}>
+            <p>Input keyword</p>
+            <input className='form-control' name='keyword' onChange={handleChange} />
+        </form>
+        <div className='mt-2'>
+            <h3>Search result</h3>
+            <div className='row'>
+                <div className='col-3'>
+                    <div className='card'>
+                        <img src='https://i.pravatar.cc?u=1' alt='...' />
+                        <div className='card-body'>
+                            <p>Name</p>
+                            <p>Price</p>
+                            <NavLink to={`/detail`} className="btn btn-success">View detail</NavLink>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+  )
+}
+
+export default UseSearchParamsDemo
+
+------------------------------------------------------------------------------------
+B2: Tao hook useSearchParam
+const [searchParams, setSearchParams] = useSearchParams();
+
+------------------------------------------------------------------------------------
+B3: Dung useRef de luu noi dung minh type vao o search vao keyword
+const keyword = useRef('')
+//khi minh type, roi Enter thi noi dung minh type se duoc luu vao keyword.current
+const handleChange = (e) => {
+  keyword.current = e.target.value;
+}
+
+------------------------------------------------------------------------------------
+B4: Sau khi co du lieu o trong keyword.current roi, thi minh se dua du lieu len url
+bang setSearchParams sau khi minh Enter
+
+const handleSubmit = (e) => {
+    e.preventDefault()
+    //dua tham so len url
+    setSearchParams({
+        keyword: keyword.current //dat ten la keyword hay dat ten khac cung duoc, no se hien len url la keyword...
+    })
+  }
+
+------------------------------------------------------------------------------------
+B5: Lay du lieu can tim kiem tu tren url xuong
+
+useEffect(() => {
+    //keyword thay doi thi moi chay ham nay (lan dau tien render trang -> keyword la null -> se ko chay ham nay)
+    if (searchParams.get(keyword)){
+        console.log('call api')
+    }
+  })
+
+------------------------------------------------------------------------------------
+B6: Tao 1 cai hook useState de luu nhung san pham khop voi tim kiem
+const [arrProduct, setArrProduct] = useState([])
+
+------------------------------------------------------------------------------------
+B7: Binding nhung san pham tim kiem duoc ra giao dien
+
+ return (
+    <div className='container'>
+        <form onSubmit={handleSubmit}>
+            <p>Input keyword</p>
+            <input className='form-control' name='keyword' onChange={handleChange} />
+        </form>
+        <div className='mt-2'>
+            <h3>Search result</h3>
+            <div className='row'>
+                {arrProduct.map((prod, index) => {
+                    return <div className='col-3'>
+                                <div className='card'>
+                                    <img src={prod.image} alt='...' />
+                                    <div className='card-body'>
+                                        <p>{prod.name}</p>
+                                        <p>{prod.price}</p>
+                                        <NavLink to={`/detail`} className="btn btn-success">View detail</NavLink>
+                                    </div>
+                                </div>
+                            </div>
+                })}
+                
+            </div>
+        </div>
+    </div>
+  )
+
+------------------------------------------------------------------------------------
+B6: Code function de call API va call function nay ben trong useEffect
+
+const getProductApi = async () => {
+    let tuKhoa = searchParams.get('keyword');
+    let result = await axios ({
+        url: `https://shop.cyberlearn.vn/api/Product?keyword=${tuKhoa}`,
+        method: 'GET'
+    })
+    setArrProduct(result.data.content)
+  }
+
+//call function nay ben trong useEffect
+useEffect(() => {
+    //keyword thay doi thi moi chay ham nay (lan dau tien render trang -> keyword la null -> se ko chay ham nay)
+    if (searchParams.get(keyword)){
+        console.log('call api');
+        getProductApi()
+    }
+  })
+
+GIAI THICH:
+Dung useSearchParams thi moi gui duoc tu khoa can tim kiem len url -> user co the gui cai link url do cho nguoi
+khac va van ra ket qua tim kiem. Con neu dung form va submit thi ko the sinh ra url nhu vay 
+duoc.

@@ -1,0 +1,29 @@
+Vi co nhieu action -> de xay ra trung ten, cung nhu de cho thuan tien viec quan ly cac action -> nen tao 1 file quan ly
+cac action
+
+Vi du nay se lam tang giam font size, nen se dung component DemoUseRedux.jsx trong folder HookDemo/UseRedux
+
+----------------------------------------
+
+Trong src/Pages/redux, tao folder actions -> tao file fontSizeAction.jsx
+File nay dung de chua cac action. File nay goi la action creator.
+
+a) rxaction, Enter de lay template. Template nay tao san 1 cai function nhan vao parameter la payload, va return 1 cai action
+b) dat lai ten va type cho action:
+export const tangGiamFontSizeAction = (payload) => ({
+  type: 'TANG_GIAM_FONT_SIZE',
+  payload
+})
+
+c) Vao DemoUseRedux.jsx:
+c1) import { tangGiamFontSizeAction } from '../../redux/actions/fontSizeAction';
+c2) Thay doan button cu bang doan code sau: 
+<button className='btn btn-success' onClick={() => {
+     const action = tangGiamFontSizeAction(5)
+     dispatch(action)
+}}>+</button>
+<button className='btn btn-success' onClick={() => {
+      const action = tangGiamFontSizeAction(-5)
+      dispatch(action)
+}}>-</button>
+

@@ -1,0 +1,132 @@
+useRef tuong tu nhu useState, nhung khac o cho set lai gia tri cho nhung state thi no toi uu ve render hon, vi no ko render lai.
+Vi du, tren Faebook, go comment, thi nhung cai comment nay ko can phai set state lai, va ca page se ko render lai.
+Cau hoi phong van: 
+Muon luu tru gia tri ma ko lam render lai giao dien thi dung hook nao? Tra loi: dung useRef
+
+B1: SET UP
+
+Trong folder HookDemo, tao folder UseRefDemo -> tao file UseRefDemo.jsx
+a) rafce, Enter de lay template code san 
+b) tao giao dien cho component UseRefDemo.jsx:
+import React from 'react'
+
+const UseRefDemo = () => {
+  return (
+    <div className='container'>
+        <h3>Demo useref</h3>
+        <p className='p-2 bg-secondary mt-2'>
+            lorem ipsum dolor sit amet 
+        </p>
+        <form className='form-group'>
+            <input id="comment" className='form-control' />
+            <button className='btn btn-success' type='submit'>OK</button>
+        </form>
+    </div>
+  )
+}
+
+export default UseRefDemo
+
+c) Vao file index.js tao route:
+<Route path='demo-useref' element={<UseRefDemo />}></Route>
+
+Vao HomeTemplate tao link:
+<li><NavLink className="dropdown-item" to="demo-useref" >Use ref</NavLink></li>
+
+------------------------------------------------------
+Day la cach lam vi du nay voi useState:
+
+Trong bai nay, co 2 state la: phan comment ma user nhap vao, va phan paragraph sau khi user hit OK button thi phan comment 
+duoc add vao phan paragraph nay.
+->
+
+B1: tao useState 
+B2: code 2 function handleChange, handleSubmit
+B3: dung onInput va onSubmit gan vao the button va the input
+B4: dung map de render arrComment ra giao dien
+
+import React from 'react'
+
+const UseRefDemo = () => {
+    const [arrComment, setArrComment] = useState([]);
+    const [comment, setComment] = useState('');
+
+    const handleChange = (e) => {
+        const {value} = e.target;
+        setComment(value);
+    }
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        //set state cua arrComment, code the nay nghia la arrComment add them comment moi
+        setArrComment([...arrComment, comment]);
+    }
+
+  return (
+    <div className='container'>
+        <h3>Demo useref</h3>
+        {arrComment.map((commentItem, index) => {
+            return <p className='p-2 bg-light mt-2' key={index}>
+                {commentItem}
+            </p> 
+        })}
+        <p className='p-2 bg-secondary mt-2'>
+            lorem ipsum dolor sit amet 
+        </p>
+        <form className='form-group' onSubmit={handleSubmit}>
+            <input id="comment" className='form-control' onInput={handleChange}/>
+            <button className='btn btn-success' type='submit'>OK</button>
+        </form>
+    </div>
+  )
+}
+
+export default UseRefDemo
+
+------------------------------------------------------
+Cach lam voi useState co nhuoc diem la moi khi user type them 1 ky tu trong phan comment, thi giao dien deu bi render lai. 
+Ngoai ra, neu component co nhieu state khac nua, thi neu minh lam thay doi 1 state khac, thi ca component bi render lai va giao
+dien se hien ra mot cai comment empty.
+-> nen dung useRef vi useRef luu lai duoc gia tri thay doi, nhung ko lam render lai giao dien
+
+useRef dung trong truong hop:
+khi minh can luu gia tri thay doi (vi du nay la phan user nhap comment thi luu lai comment nhung ko render ra giao dien ma
+add luon vao paragraph phia tren)
+
+B1: tao hook useRef
+B2: dung hook useRef.current 
+
+import React from 'react'
+
+const UseRefDemo = () => {
+    const commentRef = useRef('');
+
+    const handleChange = (e) => {
+        const {value} = e.target;
+        commentRef.current = value;
+    }
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        //set state cua arrComment, code the nay nghia la arrComment add them comment moi
+        setArrComment([...arrComment, commentRef.current]);
+    }
+
+    return (
+    <div className='container'>
+        <h3>Demo useref</h3>
+        {arrComment.map((commentItem, index) => {
+            return <p className='p-2 bg-light mt-2' key={index}>
+                {commentItem}
+            </p> 
+        })}
+        <p className='p-2 bg-secondary mt-2'>
+            lorem ipsum dolor sit amet 
+        </p>
+        <form className='form-group' onSubmit={handleSubmit}>
+            <input id="comment" className='form-control' onInput={handleChange}/>
+            <button className='btn btn-success' type='submit'>OK</button>
+        </form>
+    </div>
+    )
+}
+
+export default UseRefDemo

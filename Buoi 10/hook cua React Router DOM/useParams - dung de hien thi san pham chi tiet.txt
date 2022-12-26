@@ -1,0 +1,172 @@
+Trong folder Pages, tao folder Detail, tao file Detail.jsx
+
+
+B1: SET UP
+
+a) rafce, Enter de lay template code san
+b) Tao link trong file index.js:
+<Route path='detail'>
+    <Route path=':idProduct' element={<Detail />}></Route>
+</Route>
+c) Trong file Detail.jsx:
+- Tao hook use Params: const params = useParams();
+- Lay param: idProduct: {useParams.idProduct}
+
+File Detail.jsx:
+import React from 'react'
+import { useParams } from 'react-router-dom'
+
+const Detail = () => {
+    const params = useParams();
+  return (
+    <div>
+        idProduct: {useParams.idProduct}
+    </div>
+  )
+}
+
+export default Detail
+
+----------------------------------------------------------------------------------
+B2: Tao 1 the nav link o trang list products de click vao va xem chi tiet san pham
+
+Trong file HookDemo/UseEffectDemo/UseEffectDemp.jsx, them the nav link nhu sau:
+
+<NavLink  className={btn btn-danger} to={`/detail/${prod.id}`}>
+    View detail page
+</NavLink>
+
+Xong step nay thi minh da lay duoc product id can xem chi tiet roi.
+
+----------------------------------------------------------------------------------
+B3: Code giao dien cho trang san pham xem chi tiet
+
+File Detail.jsx:
+
+import React from 'react'
+import { useParams } from 'react-router-dom'
+
+const Detail = () => {
+  const params = useParams();
+  return (
+    <div className='container'>
+    <div className='row'>
+        <div className='col-4'>
+            <img className='w-100' src='https://i.pravatar.cc' alt='...' />
+        </div>
+        <div className='col-8'>
+            <h3>Product name</h3>
+            <p>Description: lorem</p>
+        </div>
+    </div>
+        idProduct: {useParams.idProduct}
+    </div>
+  )
+}
+
+export default Detail
+
+----------------------------------------------------------------------------------
+B4: Tao useState cho san pham can xem chi tiet, call API bang useEffect
+
+a) tao useState cho sp can xem chi tiet:   const [prodDetail, setProdDetail] = useState({}) //vi sau khi call api thi ket qua
+tra ve la object nen useState nay minh cung phai dung object
+
+--------------------------------------------------
+
+b) code function de call api xem chi tiet san pham:
+const getProductDetailById = async()=>{
+    let result = await axios({
+        url: `https://shop.cyberlearn.vn/api/Product/getbyid=${params.idProduct}`,
+        method: 'GET'
+    })
+    //ket qua tra ve thi dua vao state
+    setProdDetail(result.data.content)
+  }
+
+--------------------------------------------------
+c) Call API bang useEffect:
+useEffect(() => {
+    getProductDetailById()
+  })
+
+--------------------------------------------------
+d) Binding vao giao dien:
+  <h3>{prodDetail.name}</h3>
+            <p>Description: {prodDetail.description}</p>
+
+
+File Detail.jsx:
+
+import axios from 'axios';
+import React, { useEffect, useState } from 'react'
+import { useParams } from 'react-router-dom'
+
+const Detail = () => {
+  const params = useParams();
+  const [prodDetail, setProdDetail] = useState({})
+  const getProductDetailById = async()=>{
+    let result = await axios({
+        url: `https://shop.cyberlearn.vn/api/Product/getbyid=${params.idProduct}`,
+        method: 'GET'
+    })
+    //ket qua tra ve thi dua vao state
+    setProdDetail(result.data.content)
+  }
+  useEffect(() => {
+    getProductDetailById()
+  , [params.idProduct]) //phai de parameter thu 2 nay thi khi useParams thay doi, useEffect moi
+duoc call lai, va san pham chi tiet dang duoc chon moi duoc render ra
+  return (
+    <div className='container'>
+    <div className='row'>
+        <div className='col-4'>
+            <img className='w-100' src='https://i.pravatar.cc' alt='...' />
+        </div>
+        <div className='col-8'>
+            <h3>{prodDetail.name}</h3>
+            <p>Description: {prodDetail.description}</p>
+        </div>
+    
+  )
+}
+
+export default Detail
+
+--------------------------------------------------
+e) Xu ly phan Related products ma API tra ve cung voi phan chi tiet san pham
+
+File Detail.jsx:
+
+return (
+    <div className='container'>
+    <div className='row'>
+        <div className='col-4'>
+            <img className='w-100' src='https://i.pravatar.cc' alt='...' />
+        </div>
+        <div className='col-8'>
+            <h3>{prodDetail.name}</h3>
+            <p>Description: {prodDetail.description}</p>
+        </div>
+    </div>
+        <h3>Related Products</h3>
+        <div className='row'>
+          {prodDetail.relatedProducts?.map((prod, index) => {
+            return <div className='col-4' key={index}>
+              <div className='card'>
+                <img src={prod.image} alt='...' />
+                <div className='card-body'>
+                  <p>{prod.name}</p>
+                  <p>{prod.price}</p>
+                  <NavLink className="btn btn-danger" to={`/detail/${prod.id}`}>View detail</NavLink>
+                </div>
+              </div>
+            </div>
+          })}
+        </div> 
+    </div>
+  )
+
+LUU Y QUAN TRONG:
+Lan dau render giao dien se bi bao loi phan relatedProducts.map, vi luc do chua call API ->
+can phai de ky tu ? (optional chaining cua es6) vao relatedProducts

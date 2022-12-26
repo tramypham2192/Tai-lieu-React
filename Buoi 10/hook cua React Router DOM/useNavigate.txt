@@ -1,0 +1,130 @@
+Trong folder HookDemo -> tao folder UseNavigateDemo -> tao file LoginDemo.jsx, file ProfileDemo.jsx
+Yeu cau cua bai nay la neu user login chinh xac thi chuyen sang ProfileDemo, con neu login ko chinh xac thi hien alert
+
+B1: SET UP
+
+a)rafce, Enter
+b) Vao file index.js, tao route:
+<Route path='demo-usenavigate' element={<LoginDemo />}></Route>
+<Route path='profile' element={<ProfileDemo />}></Route>
+
+Vao HomeTemplate tao 1 the drop-down moi:
+<div className="dropdown">
+    <button className="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">Route</button>
+    <ul className="dropdown-menu">
+        <li><NavLink className="dropdown-item" to="demo-usenavigate" >Use Navigate</NavLink></li>
+    </ul>
+</div>
+
+c) Tao giao dien cho LoginDemo.jsx:
+
+import React from 'react'
+
+const LoginDemo = () => {
+    const userLoginRef = useRef({username: '', password: ''});
+    const handleChange = (e) => {
+        const {value, name} = e.target;
+        userLoginRef.current[name] = value;
+    }
+    const handleSubmit = (e) => {
+        e.preventDefault();
+    }
+  return (
+    <div className='container'>
+        <h3>LoginDemo</h3>
+        <div className='form-group'>
+            <p>Username</p>
+            <input className='form-control' name='username' />
+        </div>
+
+        <div className='form-group'>
+            <p>Password</p>
+            <input className='form-control' name='password' />
+        </div>
+
+        <div className='form-group'>
+            <button className='btn btn-success mt-2' type='submit'>Login</button>
+        </div>
+    </div>
+  )
+}
+
+export default LoginDemo
+
+--------------------------------------------
+B2: VALIDATION CHO FORM
+
+Tu lam
+
+--------------------------------------------
+B3: Xu ly trong file LoginDemo:
+
+a) import:
+import { useRef } from 'react';
+import {useNavigate} from 'react-router-dom'
+ 
+b) Tao hook useNavigate:     
+const navigate = useNavigate();
+
+c) Lay username va password tu hook useRef ra:
+const {username, password} = userLoginRef.current;
+
+d) Kiem tra xem username va password nhap co chinh xac ko:
+if (username == 'cybersoft' && password == 'cybersoft'){
+    //user nhap chinh xac thi chuyen qua trang profile
+    navigate('/profile')
+} else {
+    alert("Tai khoan hoac mat khau nhap khong dung")
+}
+
+GIAI THICH:
+Neu de the nav link o button thi ko kiem tra user co nhap dung ko, cung chuyen huong sang trang profile => phai dung
+useNavigate thi moi kiem tra user nhap user password co chinh xac khong.
+
+File LoginDemo.JSX:
+
+import React from 'react'
+import { useRef } from 'react';
+import {useNavigate} from 'react-router-dom'
+
+const LoginDemo = () => {
+    const userLoginRef = useRef({username: '', password: ''});
+    const navigate = useNavigate();
+
+    const handleChange = (e) => {
+        const {value, name} = e.target;
+        userLoginRef.current[name] = value;
+    }
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        const {username, password} = userLoginRef.current;
+        if (username == 'cybersoft' && password == 'cybersoft'){
+            //user nhap chinh xac thi chuyen qua trang profile
+            navigate('/profile')
+        } else {
+            alert("Tai khoan hoac mat khau nhap khong dung")
+        }
+    }
+  return (
+    <div className='container'>
+        <h3>LoginDemo</h3>
+        <div className='form-group'>
+            <p>Username</p>
+            <input className='form-control' name='username' />
+        </div>
+
+        <div className='form-group'>
+            <p>Password</p>
+            <input className='form-control' name='password' />
+        </div>
+
+        <div className='form-group'>
+            <button className='btn btn-success mt-2' type='submit'>Login</button>
+        </div>
+    </div>
+  )
+}
+
+export default LoginDemo
+
+

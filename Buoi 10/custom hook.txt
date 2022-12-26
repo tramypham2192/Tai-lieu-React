@@ -1,0 +1,40 @@
+Cac link custom hook hay:
+https://github.com/topics/custom-hook?o=desc&q=custom%20hook&s=stars&fbclid=IwAR1PaR1TUWZfE25pnLlZIthNgaMqLV8BXVuX7ImuB9Tk1kXvkmXz8WsCYi4
+https://usehooks.com/?fbclid=IwAR0-FRLA9F1C-My_ZrrkDc33PXdrhy-IxRBgJdOry6xLgq5zBAg8Ij9bkxY
+https://github.com/streamich/react-use?fbclid=IwAR15VgUk8CFSmcU2FCTFCSXwk9GMog-Et7EXNGsbFOoZ_W3cRxGjt29e2mU
+Co the tim tu khoa custom hook tren github de tham khao cac custom hook huu ich va lay ve su dung
+
+B1: SET UP
+Trong folder HookDemo, tao folder UseRoute, tao file useRoute.jsx
+
+a) rafce, Enter
+b) Tuy vao muc dich cua minh la muon chuyen huong trang, hay search ... ma minh tao cac hook 
+tuong ung phia ben trong const useRoute:
+c) code custome hook:
+import React from 'react'
+import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
+
+const useRoute = () => {
+  const params = useParams();
+  const navigate = useNavigate();
+  const searchParam = useSearchParams();
+  return {params, navigate, searchParam};
+}
+
+export default useRoute
+
+----------------------------------------------------
+B2: SU DUNG CUSTOM HOOK
+
+Vao Home.jsx, vi hook ko dung voi class component nen xoa het noi dung hien tai di va code nhu
+sau:
+import React from "react";
+import useRoute from "../../HookDemo/UseRoute/useRoute";
+
+const Home = () => {
+  const {params, navigate, searchParam} = useRoute();
+  const [search, setSearch] = searchParam;
+  console.log(params);
+  console.log(navigate);
+  console.log(searchParams)
+}
