@@ -1,0 +1,184 @@
+xem Code mau o reactfe73/code_mau/src/Pages/Form
+
+B1: Tao file ReactForm.jsx
+B2: Vao file index.js them vao:
+<Route path='form' element={<ReactForm />}></Route>
+B3: Vao file HomeTemplate.jsx them vao:
+<NavLink className='nav-link' to='/form'>Login</NavLink>
+B4: Code giao dien - code file ReactForm.jsx:
+ return (
+            <>
+                <form className='container' onSubmit={this.handleSubmit}>
+                    <h3>Create product</h3>
+                    <div className='card'>
+                        <div className='card-header'>
+                            Product info
+                        </div>
+                        <div className='card-body'>
+                            <div className='row'>
+                                <div className='col-6'>
+                                    <div className='form-group'>
+                                        <p>id</p>
+                                        <input value={formValue.id} data-max-length="6" className='form-control' name="id" onInput={this.handleChangeInput} />
+                                        {this.state.formError.id && <div className='alert alert-danger mt-2'>{this.state.formError.id}</div>}
+                                    </div>
+                                    <div className='form-group'>
+                                        <p>name</p>
+                                        <input value={formValue.name} className='form-control' name="name" onInput={this.handleChangeInput} />
+                                        {this.state.formError.name && <div className='alert alert-danger mt-2'>{this.state.formError.name}</div>}
+                                    </div>
+                                    <div className='form-group'>
+                                        <p>price</p>
+                                        <input value={formValue.price} data-type="number" className='form-control' name="price" onInput={this.handleChangeInput} />
+                                        {this.state.formError.price && <div className='alert alert-danger mt-2'>{this.state.formError.price}</div>}
+                                    </div>
+                                </div>
+                                <div className='col-6'>
+                                    <div className='form-group'>
+                                        <p>image</p>
+                                        <input
+                                            value={formValue.image} className='form-control' name="image" onInput={this.handleChangeInput} />
+                                        {this.state.formError.image && <div className='alert alert-danger mt-2'>{this.state.formError.image}</div>}
+                                    </div>
+                                    <div className='form-group'>
+                                        <p>productType</p>
+                                        <select value={formValue.productType} name="productType" className='form-control' onInput={this.handleChangeInput}>
+                                            <option value="phone">phone</option>
+                                            <option value="tablet">tablet</option>
+                                            <option value="laptop">laptop</option>
+                                        </select>
+                                    </div>
+                                    <div className='form-group'>
+                                        <p>description</p>
+                                        <input value={formValue.description} className='form-control' name="description" onInput={this.handleChangeInput} />
+                                        {this.state.formError.description && <div className='alert alert-danger mt-2'>{this.state.formError.description}</div>}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div className='card-footer'>
+                            <button type='submit' className='btn btn-success m-2' disabled={!this.state.valid}>Create</button>
+                            <button onClick={() => {
+                                this.handleUpdateProduct()
+                            }} type='button' className='btn btn-primary m-2' disabled={!this.state.valid}>Update</button>
+                        </div>
+                    </div>
+                </form>
+                <div className='container mt-2'>
+                    <TableProduct handleEditProduct={this.handleEditProduct} arrProduct={this.state.arrProduct} handleDelProduct={this.handleDelProduct} />
+                </div>
+            </>
+        )
+
+-----------------------------------------------------------------
+B5: Tao 1 object chua state cua nhung input duoc user nhap vao
+Luu y la ten cua nhung thuoc tinh trong object nay phai giong nhu name trong input tag
+state = {
+        formValue: {
+            id: '1',
+            name: 'abc',
+            price: '',
+            image: '',
+            description: '',
+            productType: 'phone' //productType la the select, luon luon de default la gia tri option dau tien
+        }
+}
+
+-----------------------------------------------------------------
+B6: Code function handleSubmit va dung function onSubmit de binding function
+handleSubmit voi form
+
+Luu y trong function handleSubmit phai:
+- ngan su kien reload browser e.preventDefault()
+
+handleSubmit = (e) => {
+        //Ngăn sự kiện reload browser
+        e.preventDefault();
+    }
+
+----------------------------------
+dung onSubmit de binding function handleSubmit voi form:
+<form className='container' onSubmit={this.handleSubmit}>
+
+-----------------------------------------------------------------
+B7: Dung function onInput de lay nhung du lieu ma user nhap vao, roi set state luon
+voi nhung du lieu do
+
+<input className='form-control' name="id" onInput={(e) => {
+	let value = e.target.value;
+	let name = e.target.name;
+	//setState lai cho object state dua theo input ma user nhap vao:
+	
+	//Lay object state ra va gan lai gia tri moi cho no:
+	let newFormValue= this.state.formValue;
+	newFormValue.id = value;
+
+	//setState lai cho object state:
+	this.setState({
+		formValue: newFormValue
+	}, () => {
+		console.log(this.state);
+	})
+	console.log(name, value);
+}} />
+
+GIAI THICH:
+e.target chinh la cai the input nen e.target.value la gia tri input ma user 
+nhap vao.
+
+Tuong tu voi cac the khac minh cung lam nhu vay, chi thay ten thuoc tinh cua 
+object state:
+<input className='form-control' name="name" onInput={(e) => {
+	let value = e.target.value;
+	let name = e.target.name;
+	//setState lai cho object state dua theo input ma user nhap vao:
+	
+	//Lay object state ra va gan lai gia tri moi cho no:
+	let newFormValue= this.state.formValue;
+	newFormValue.name = value;
+
+	//setState lai cho object state:
+	this.setState({
+		formValue: newFormValue
+	}, () => {
+		console.log(this.state);
+	})
+	console.log(name, value);
+}} />
+
+.....tuong tu voi cac the input khac.....
+
+=> Nen tao 1 function handleChangeInput va thay cho onInput={this.handleChangeInput} tai cac the input:
+handleChangeInput = (e) => {
+        /*
+            Trên 1 thẻ html sẽ có 2 dạng thuộc tính
+            properties : là các thuộc tính có sẵn của thẻ như id, className,name, value,style ...
+            attribute (thuộc tính mở rộng): Do mình thêm vào -> không thể dùng dom.thuocTinh => dom.getAttribute('tenAttribute');        
+        */
+
+        let { value, name } = e.target; //image, '' | abc
+        let dataType = e.target.getAttribute('data-type');
+        let dataMaxLength = e.target.getAttribute('data-max-length');
+        //Lấy object form value ra xử lý riêng
+        let newFormValue = this.state.formValue;
+        //dynamic key
+        newFormValue[name] = value;
+
+        
+
+
+        //setState
+        this.setState({
+            formValue: newFormValue
+     
+        }, () => {
+
+            //Gọi hàm check lỗi sau mỗi lần cập nhật value và error từ người dùng nhập
+            this.setState({
+                valid: this.checkFormValid()
+            })
+        })
+
+
+        console.log(name, value);
+    }

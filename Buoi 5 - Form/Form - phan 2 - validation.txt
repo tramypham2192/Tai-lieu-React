@@ -1,0 +1,196 @@
+B1: Tao them 1 object ten la formError trong state de luu giu state cho error cua cac input field:
+state = {
+        formValue: {
+            id: '1',
+            name: 'abc',
+            price: '',
+            image: '',
+            description: '',
+            productType: 'phone'
+        },
+        formError: {
+            id: '',
+            name: '',
+            price: '',
+            image: '',
+            description: '',
+        }
+    }
+
+----------------------------------------------------------------------------------------------------------------------------------------------------
+B2: Tao div co className = "alert alert-danger mt2" cho cac input field de hien thi thong bao loi neu input ko hop le
+<div className='alert alert-danger mt-2'>{this.state.formError.id}</div>
+Tuong tu tao the div nay cho cac input field khac, except the select
+
+----------------------------------------------------------------------------------------------------------------------------------------------------
+B3: Dung function handleChangeInput de xu ly loi nhap input luon
+
+B3a: Xu ly neu user ko nhap vao 1 input field nao do - hien thi loi "truong ten_field khong duoc de trong":
+let newFromError = this.state.formError;
+        let message = '';
+        if (value.trim() === '') {
+            message = name + ' cannot be blank !';
+        }
+        newFromError[name] = message;
+
+-------------------------------------------------------
+B3b: Xu ly cac loi ve dinh dang cua input field - dung Regular Expression
+
+- Kiem tra cac input field chi cho phep nhap toan number: 
+1) Them attribute data-type='number' vao the input nao yeu cau chi co nhap so
+2) Lay data type ra va kiem tra:
+- Lay data type ra
+let dataType = e.target.getAttribute('data-type');
+- Kiem tra xem input co phai nhap toan number hay ko:
+if (value.trim() === '') {
+            message = name + ' cannot be blank !';
+        } else {
+            if (dataType == 'number') {
+                let regexNumber = /^\d+(,\d{1,2})?$/; //voi cac bieu thuc regex thi co the search cho nhanh, neu search ko ra ket qua thi tu viet
+                if (!regexNumber.test(value)) {
+                    message = name + ' is invalid!';
+                }
+            }
+
+--------------------------------------
+- Kiem tra xem input co phai nhap dinh dang email hay ko
+
+--------------------------------------
+- Kiem tra xem length cua ky tu co phu hop hay ko:
+1) Them data-type='max-length' vao the:
+<input value={formValue.id} data-max-length="6" className='form-control' name="id" onInput={this.handleChangeInput} />
+2) Lay datatype ra:
+let dataMaxLength = e.target.getAttribute('data-max-length');
+3) Kiem tra xem max length co hop le hay ko:
+if (value.trim() === '') {
+            message = name + ' cannot be blank !';
+        } else {
+            if (dataType == 'number') {
+                let regexNumber = /^\d+(,\d{1,2})?$/;
+                if (!regexNumber.test(value)) {
+                    message = name + ' is invalid!';
+                }
+            }
+            if (dataMaxLength !== null && value.length > dataMaxLength) {
+                message = name + ` no more than  ${dataMaxLength} character !`;
+            }
+            // if(dataType == 'email') 
+            // {
+
+            // }
+        }
+
+----------------------------------------------------------------------------------------------------------------------------------------------------
+B4: Disable button de submit form neu nhu input field bi empty hoac sai dinh dang
+
+Phai dung State - cu cai gi thay doi value thi phai dung state
+
+B4a: Tao 1 object state ten la valid:
+ state = {
+        formValue: {
+            id: '1',
+            name: 'abc',
+            price: '',
+            image: '',
+            description: '',
+            productType: 'phone'
+        },
+        formError: {
+            id: '',
+            name: '',
+            price: '',
+            image: '',
+            description: '',
+        },
+        valid: false
+}
+
+--------------------------------------
+B4b: Gan them property disable={!this.state.valid} vao nut button de submit form
+<button type='submit' className='btn btn-success m-2' disabled={!this.state.valid}>Create</button>
+
+--------------------------------------
+B4c: Viet function checkFormValid de change state cho valid:
+checkFormValid = () => {
+        //return true | false : true khi form hợp lệ, false khi form không hợp lệ
+        /*
+            form hợp lệ khi: Các trường formError = rỗng, và các trường value tưng ứng phải khác rỗng 
+        */
+        let { formError, formValue } = this.state;
+        for (let key in formError) {
+            if (formError[key] !== '' || formValue[key] === '') {
+                return false;
+            }
+        }
+
+
+        return true;
+    }
+
+--------------------------------------
+B4d: Call function checkFormValid sau moi lan cap nhat value va error trong function handleChangeInput:
+ handleChangeInput = (e) => {
+        /*
+            Trên 1 thẻ html sẽ có 2 dạng thuộc tính
+            properties : là các thuộc tính có sẵn của thẻ như id, className,name, value,style ...
+            attribute (thuộc tính mở rộng): Do mình thêm vào -> không thể dùng dom.thuocTinh => dom.getAttribute('tenAttribute');        
+        */
+
+        let { value, name } = e.target; //image, '' | abc
+        let dataType = e.target.getAttribute('data-type');
+        let dataMaxLength = e.target.getAttribute('data-max-length');
+        //Lấy object form value ra xử lý riêng
+        let newFormValue = this.state.formValue;
+        //dynamic key
+        newFormValue[name] = value;
+
+        /*Xử lý cho formError */
+        let newFromError = this.state.formError;
+        let message = '';
+        if (value.trim() === '') {
+            message = name + ' cannot be blank !';
+        } else {
+            if (dataType == 'number') {
+                let regexNumber = /^\d+(,\d{1,2})?$/;
+                if (!regexNumber.test(value)) {
+                    message = name + ' is invalid!';
+                }
+            }
+            if (dataMaxLength !== null && value.length > dataMaxLength) {
+                message = name + ` no more than  ${dataMaxLength} character !`;
+            }
+            // if(dataType == 'email') 
+            // {
+
+            // }
+        }
+        newFromError[name] = message;
+
+
+        //setState
+        this.setState({
+            formValue: newFormValue,
+            formError: newFromError
+        }, () => {
+
+            //Gọi hàm check lỗi sau mỗi lần cập nhật value và error từ người dùng nhập
+            this.setState({
+                valid: this.checkFormValid()
+            })
+        })
+
+
+        console.log(name, value);
+    }
+
+--------------------------------------
+B4e: De tranh viec user biet cach vao Inspect va xoa property disable cua button de submit di roi submit form,
+thi minh phai xu ly them 1 lan nua o function handleSubmit:
+ handleSubmit = (e) => {
+        //Ngăn sự kiện reload browser
+        e.preventDefault();
+        if (!this.checkFormValid()) {
+            alert('Form is invalid!');
+            return; //Nếu form không hợp lệ => không submit
+        }
+}

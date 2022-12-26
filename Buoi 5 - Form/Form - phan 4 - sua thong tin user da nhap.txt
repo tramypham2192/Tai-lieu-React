@@ -1,0 +1,81 @@
+B1: Lay value cua product dang can sua va hien thi no len cac input field
+Them vao dong nay o render():
+let {formValue} = this.state;
+Them vao value={formValue.id}, {formValue.name}, {formValue.price}, {formValue.description} o
+cac the input:
+<input value={formValue.id} data-max-length="6" className='form-control' name="id" onInput={this.handleChangeInput} />
+<input value={formValue.name} className='form-control' name="name" onInput={this.handleChangeInput} />
+<input value={formValue.price} data-type="number" className='form-control' name="price" onInput={this.handleChangeInput} />
+<input value={formValue.image} className='form-control' name="image" onInput={this.handleChangeInput} />
+<select value={formValue.productType} name="productType" className='form-control' onInput={this.handleChangeInput}>
+<input value={formValue.description} className='form-control' name="description" onInput={this.handleChangeInput} />
+
+-------------------------------------------------------------------------------------------------
+B2: Viet function handleEditProduct de gan state cua formValue object thanh product duoc click de edit
+ handleEditProduct = (prodClick) => {
+        //Click vào product nào thì state của formvalue sẽ thay đổi giá trị thành product đó
+        this.setState({
+            formValue: prodClick
+        }, () => {
+            this.setState({
+                valid: this.checkFormValid() //ke ca khi edit thi cung phai kiem tra validation
+            })
+        })
+
+    }
+
+-------------------------------------------------------------------------------------------------
+B3: Binding function handleEditProduct vao cho component TableProduct trong render():
+<div className='container mt-2'>
+         <TableProduct handleEditProduct={this.handleEditProduct} arrProduct={this.state.arrProduct} handleDelProduct={this.handleDelProduct} />
+</div>
+
+-------------------------------------------------------------------------------------------------
+B4: TableProduct component nhan props la function handleEditProduct tu component ReactForm roi
+truyen props nay vao onClick
+const { arrProduct,handleDelProduct,handleEditProduct } = this.props;
+<button onClick={()=>{
+        let prodEdit = {id,name,price,image,productType,description}
+        handleEditProduct(prodEdit)
+        }} className='btn btn-primary mx-2'>
+        <i className='fa fa-edit'></i>
+</button>
+
+Sau khi lam xong B4, thi khi click vao nut edit product nao do, nhung thong tin cua product nay se
+hien thi len cac o input cua form
+GIAI THICH: Khi click vao nut edit cua product nao do, thi nhung thong tin cua product nay duoc
+truyen den function handleEditProduct, va hien thi ra cac o input cua form
+
+B5: Tao button Update. Viet function handleUpdateProduct de sua thong tin product trong array 
+product. Truyen function handleUpdateProduct vao button Update
+Luu y ko duoc de type cua button nay la submit, ma chi la button thoi
+ <button onClick={() => {
+        this.handleUpdateProduct()
+ }} type='button' className='btn btn-primary m-2' disabled={!this.state.valid}>Update</button>
+
+--------------------------------------------------
+handleUpdateProduct = () => {
+        console.log('abc');
+        //Tìm ra sản phẩm chứa mã tương đương formValue.id
+        let { arrProduct, formValue } = this.state;
+        let prodUpdate = arrProduct.find(pro => pro.id === formValue.id);
+
+        if (prodUpdate) {
+	    // Thay vi sua thu cong kieu nhu sau:
+            // prodUpdate.name = formValue.name;
+            // prodUpdate.price = formValue.price;
+            // prodUpdate.image = formValue.image;
+	    // ..., thi neu ma co 50 input field thi ko the sua thu cong => dung for in
+            for (let key in prodUpdate) {
+                if (key !== 'id') { //id ko duoc phep sua
+                    prodUpdate[key] = formValue[key]; //sua cac input field con lai
+                }
+            }
+        }
+
+        //Cập nhật lại state sau khi chỉnh sửa
+        this.setState({
+            arrProduct: arrProduct
+        })
+
+    }
