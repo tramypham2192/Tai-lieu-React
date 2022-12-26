@@ -1,0 +1,116 @@
+Props truyen duoc thuoc tinh kieu variable cua component cha sang componet con:
+
+DemoProps la component cha:
+import React, { Component } from 'react'
+import CardProduct from './CardProduct'
+export default class DemoProps extends Component {
+  render() {
+    return (
+      <div>
+        <CardProduct id="1" />
+        <CardProduct id="2"  />
+      </div>
+    )
+  }
+}
+
+----------------------------------------
+CardProduct la component con:
+import React, { Component } from 'react'
+
+export default class CardProduct extends Component {
+  render() {
+    return (
+      <div>
+        <img src={`https://i.pravatar.cc?u=${this.props.id}`} />
+      </div>
+    )
+  }
+}
+
+---------------------------------------------------------------------------------
+Props truyen duoc object tu component cha sang component con
+
+ArticleCha.jsx:
+
+import React, { Component } from 'react'
+import ArticleCon from './ArticleCon'
+export default class ArticleCha extends Component {
+    contentBaiBao = {
+        title: "Tin moi Nov 6, 2022",
+        content: "Tin so 1, Tin so 2"
+    }
+    render() {
+    return (
+      <div>
+        <ArticleCon noiDungBaiBao = {this.contentBaiBao} />
+      </div>
+    )
+  }
+}
+
+----------------------------------------
+ArtcileCon.jsx:
+
+import React, { Component } from 'react'
+
+export default class ArticleCon extends Component {
+  render() {
+    let {noiDungBaiBao} = this.props
+    //hoac co the viet theo cach nay
+    let {title, content} = this.props.noiDungBaiBao
+    return (
+      <div className='card'>
+        <h3 className='card-header'>
+            {/* {noiDungBaiBao.title} */}
+            {title}
+        </h3>
+        <h3 className='card-body'>
+            {/* {noiDungBaiBao.content} */}
+            {content}
+        </h3>
+      </div>
+    )
+  }
+}
+
+---------------------------------------------------------------------------------
+props con truyen duoc ca array, string, HTML tag, jsx
+
+props truyen HTML tag
+
+Component cha:
+
+import React, { Component } from 'react'
+import ComponentConNhanPropsHTMLtag from './ComponentConNhanPropsHTMLtag'
+export default class ComponentChaTruyenHTMLtag extends Component {
+  render() {
+    return (
+      <div>
+        <ComponentConNhanPropsHTMLtag nutButton={<button>Click me</button>} />
+      </div>
+    )
+  }
+}
+
+----------------------------------------
+Component con:
+
+import React, { Component } from 'react'
+
+export default class ComponentConNhanPropsHTMLtag extends Component {
+  render() {
+    const {nutButton} = this.props
+    return (
+      <div>
+        {this.props.nutButton}
+      </div>
+    )
+  }
+}
+
+---------------------------------------------------------------------------------
+Truyen props cho component con tu 1 array cac object
+
+
+
