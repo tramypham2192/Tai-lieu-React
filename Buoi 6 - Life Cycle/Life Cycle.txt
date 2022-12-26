@@ -1,0 +1,8 @@
+xem Code mau o CyberSoft/React/reactfe73/Pages/ReactLifeCycle
+
+Tao folder ReactLifeCycle ben trong folder Pages -> tao 2 file ChildComponent.jsx va ReactLifeCycle.jsx
+Vao file index.js, tao route cho ReactLifeCycle:
+Them vao dong code sau: <Route path='reactlifecycle' element={<ReactLifeCycle />}></Route>
+Vao file HomeTemplate.jsx, them vao dong code sau:
+<NavLink className={({isActive})=> isActive ? 'nav-link bg-white text-dark' : 'nav-link' } to='/reactlifecycle'>React lifecycle</NavLink>
+
