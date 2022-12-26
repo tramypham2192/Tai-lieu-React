@@ -1,0 +1,72 @@
+Trong folder src, tao folder HookDemo -> tao folder UseState -> tao file UseStateDemo
+
+B1: Set up
+
+a) Type rafce, Enter de lay frame san cua function component
+b) Vao file index.js, gan function component UseStateDemo vua tao vao file index.js:
+<Route path='demo-usestate' element={<UseStateDemo />}></Route>
+c) Vao HomeTemplate, link function component vua tao vao HomeTemplate:
+<div className="dropdown">
+	<button className="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">Hooks</button>
+ 	<ul className="dropdown-menu">
+        	<li><NavLink className="dropdown-item" to="demo-usestate" >Use State</NavLink></li>
+        </ul>
+</div>
+d) Vao file UseStateDemo.jsx, import useState:
+import React, {useState} from 'react'
+
+-----------------------------------------------------
+B2: Dung layout cho file UseStateDemo.jsx
+
+-----------------------------------------------------
+B3: Tao 1 cai useState hook 
+
+a) Tao hook:
+- cai hook nay phai o dong dau sau khi declare function component
+- cai hook nay call ham useState voi parameter la default state. O day la 1 (number ban dau duoc set la 1)
+- call ham useState thi tra ra 1 array gom 2 phan tu: state va function setState
+
+let [number, setNumber] = useState(1); 
+Giai thich:
+neu default state la object thi let [object, setObject]
+neu default state la string thi let [string, setString]
+
+b) Sau khi tao hook thi binding hook vao giao dien
+<p>Number: {number}</p>
+
+c) Sau do, dung onClick ket hop voi function setNumber de cap nhat state moi cho number
+va render number moi ra giao dien
+<button className='btn btn-success mx-2' onClick={() =>{
+	let newNumber = number + 1;
+        //function setState se nhan vao state moi thay the state cu va render number moi ra giao dien
+        setNumber(newNumber)
+}}>+</button>
+
+Chu thich:
+De kiem tra state no dang chay state nhu the nao thi co the console.log(number} ra de
+kiem tra
+-------------------------
+File UseStateDemo.jsx:
+
+import React, {useState} from 'react'
+
+const UseStateDemo = () => {
+    let [number, setNumber] = useState(1);
+    //console log number ra de kiem tra state dang chay nhu the nao
+    console.log('number ', number)
+  return (
+    <div className='container'>
+        <h3>Vi du 1: Tang giam number</h3>
+        <p>Number: {number}</p>
+        <button className='btn btn-success mx-2' onClick={() =>{
+            let newNumber = number + 1;
+            //function setState se nhan vao state moi thay the state cu va render number moi ra giao dien
+            setNumber(newNumber)
+        }}>+</button>
+        <button className='btn btn-success mx-2'>-</button>
+    </div>
+  )
+}
+
+export default UseStateDemo
+

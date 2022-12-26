@@ -1,0 +1,161 @@
+Truong hop 3:
+useEffect co tham so thu 2 la 1 state
+
+Yeu cau cua bai nay la voi vi du shoes shop, can co them 1 button Xem chi tiet, click vao button
+nay thi bat ra 1 Modal hien thi thong tin chi tiet cua san pham
+
+B1: Set up
+a) Trong folder UseEffectDemo, tao file Modal.jsx
+
+b) rafc, Enter
+c) Them props vao parameter cua Modal
+d) Trong return( type bs5-modal-default de lay frame code san. Boi den toan bo doan nay, 
+chuot phai, convert HTML to JSX. Sau do, chinh sua code mot chut
+
+
+File Modal.jsx:
+import React from 'react'
+
+export const Modal = (props) => {
+  return (
+    <>
+        <button type="button" className="btn btn-primary btn-lg" data-bs-toggle="modal" data-bs-target="#modalId">
+        Launch
+        </button>
+        
+        <div className="modal fade" id="modalId" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false" role="dialog" aria-labelledby="modalTitleId" aria-hidden="true">
+            <div className="modal-dialog modal-dialog-scrollable modal-dialog-centered modal-sm" role="document">
+                <div className="modal-content">
+                    <div className="modal-header">
+                        <h5 className="modal-title" id="modalTitleId">Modal title</h5>
+                            <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div className="modal-body">
+                        Body
+                    </div>
+                    <div className="modal-footer">
+                        <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="button" className="btn btn-primary">Save</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </>
+  )
+}
+
+
+Sau do, cho Modal vao phan return cua file UseEffectDemo:
+return (
+    <div className='container'>
+        <h3>Number: {number}</h3>
+        <button className='btn btn-success' onClick={() => {
+            setNumber(number + 1)
+        }}>+</button>
+        <h3>Product list</h3>
+        <div className='row'>
+            {renderProduct()}
+        </div>
+        <Modal />
+    </div>
+  )
+
+e) Them button de xem chi tiet vao component UseEffectDemo
+
+const renderProduct = () => {
+    return arrProduct.map((prod, index) => {
+        return <div className='col-4' key={index}>
+            <div className='card'>
+                <img src={prod.image} alt='...' />
+                <div className='card-body'>
+                    <p>{prod.name}</p>
+                    <p>{prod.price}</p>
+                    <button className='btn btn-success'
+                    data-bs-toogle="modal"
+                    data-bs-target="#modalId">View detail</button>
+                </div>
+            </div>
+        </div>
+    })
+  }
+---------------------------------------------
+B2: Tao useState 
+
+a) Tao useState cho id cua san pham duoc click vao de xem chi tiet
+(Trong file UseEffectDemo)  
+const [idProductDetail, setIdProductDetail] = useState(0)
+b) Tao useState cho viec render ra san pham can xem chi tiet
+const [productDetail, setProductDetail] = useState({})
+
+---------------------------------------------
+B3: Code function goi API
+const getProductDetail = async() => {
+    let result = await axios({
+        url: 'https://shop.cyberlearn.vn/api/product/getbyid?id=' + idProductDetail,
+        method: 'get'
+    })
+    //sau khi lay duoc du lieu tu API thi set state moi cho product detail
+    setProductDetail(result.data.content);
+    console.log(result.data.content)
+  }
+
+---------------------------------------------
+B4: Tao useEffect cho san pham can xem chi tiet
+
+//function useEffect cho san pham xem chi tiet
+  useEffect(() => {
+    /*Bat ky su kien nao lam state cua idProductDetail thay doi
+    thi ham nay se chay (tuong tu nhu ComponentDidUpdate ma co if)
+    */
+    if (idProductDetail !== 0){
+        getProductDetail();
+    }
+  }, [idProductDetail])
+
+---------------------------------------------
+B5: Dung onClick de xem chi tiet
+
+Trong file UseEffectDemo:
+(trong function renderProduct)
+<button className='btn btn-success'
+                    data-bs-toogle="modal"
+                    data-bs-target="#modalId" onClick={() => {
+                        setIdProductDetail(prod.id)
+                    }}>View detail</button>
+
+---------------------------------------------
+B6: Truyen prodDetail xuong Modal
+
+Trong file UseEffectDemo:
+return (
+    <div className='container'>
+        <h3>Number: {number}</h3>
+        <button className='btn btn-success' onClick={() => {
+            setNumber(number + 1)
+        }}>+</button>
+        <h3>Product list</h3>
+        <div className='row'>
+            {renderProduct()}
+        </div>
+        <Modal prodDetail={productDetail} />
+    </div>
+  )
+
+---------------------------------------------
+B7: Truyen props xuong Modal
+
+File Modal:
+import React from 'react'
+
+export const Modal = (props) => {
+  let {productDetail} = props;
+  return (
+    <>
+       ...
+                        <h5 className="modal-title" id="modalTitleId">{productDetail.name}</h5>
+                          ...
+                        <img src={productDetail.img} alt='...' className="w-100" />
+                  ...
+
+---------------------------------------------
+B8: 

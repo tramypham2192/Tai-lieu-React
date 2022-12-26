@@ -1,0 +1,116 @@
+Thay vi cach dung mapStateToProps va dung dispatch, thi minh dung useSelector boi vi best practice, neu dung class component
+thi moi dung mapStateToProps va dispatch, con neu dung functional component thi phai dung hook useSelector (du mapStateToProps
+van dung duoc voi function component nhung day ko phai best practices)
+
+--------------------------------------------------
+Vi du Tang giam font size:
+
+B1: SET UP
+Trong folder HookDemo, tao folder UseRedux -> tao file DemoUseRedux.jsx.
+a) rafce de co template code san
+
+b) Vao file index.js, gan function component UseStateDemo vua tao vao file index.js:
+<Route path='demo-useredux' element={<DemoUseRedux />}></Route>
+
+c) Vao HomeTemplate, link function component vua tao vao HomeTemplate:
+<div className="dropdown">
+	<button className="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">Hooks</button>
+ 	<ul className="dropdown-menu">
+           <li><NavLink className="dropdown-item" to="demo-useredux" >Use redux</NavLink></li>
+        </ul>
+</div>
+
+--------------------------------------------------
+B2: TAO HOOK DE LAY STATE TU REDUX VE
+
+Vao file DemoUseRedux.jsx:
+a) import { useSelector } from 'react-redux'
+b) Tao hook:
+const fontSize = useSelector(state => state.fontSizeState); //can lay state nao thi state.ten_state_can_lay
+console.log("font size ", fontSize)
+
+File DemoUseRedux.jsx:
+
+import React from 'react'
+import { useSelector } from 'react-redux'
+
+const DemoUseRedux = () => {
+  // lay state tu redux ve
+  const fontSize = useSelector(state => state.fontSizeState);
+  console.log("font size ", fontSize)
+  return (
+    <div>DemoUseRedux</div>
+  )
+}
+
+export default DemoUseRedux
+
+--------------------------------------------------
+B3: TAO GIAO DIEN
+
+import React from 'react'
+import { useDispatch } from 'react-redux';
+import { useSelector } from 'react-redux'
+
+const DemoUseRedux = () => {
+  const fontSize = useSelector(state => state.fontSizeState);
+  console.log("font size ", fontSize)
+  return (
+    <div className='container'>
+      <h3>Tang giam font size</h3>
+      <p style={{fontSize:fontSize}}>lorem ipsum </p>
+      <button>+</button>
+    </div>
+  )
+}
+
+export default DemoUseRedux
+
+--------------------------------------------------
+B4: UseDispatch
+Thay vi dung this.props.dispatch thi minh dung hook la UseDispatch:
+const dispatch = useDispatch();
+
+--------------------------------------------------
+B5: Dung onClick va tao action, roi dispatch dua du lieu len redux (cach nay ko can import {connect} nhu mapStateToProps va this.props.dispatch - cai hook nay duoc viet
+la da xu ly chuyen connect cho minh roi)
+
+ const action = {
+          type: 'TANG_GIAM_FONT_SIZE',
+          payload: 5
+        }
+        dispatch(action)
+
+File DemoUseRedux:
+
+import React from 'react'
+import { useDispatch } from 'react-redux';
+import { useSelector } from 'react-redux'
+
+const DemoUseRedux = () => {
+  const fontSize = useSelector(state => state.fontSizeState);
+  console.log("font size ", fontSize)
+  const dispatch = useDispatch();
+  return (
+    <div className='container'>
+      <h3>Tang giam font size</h3>
+      <p style={{fontSize:fontSize}}>lorem ipsum </p>
+      <button className='btn btn-success' onClick = {() => {
+        const action = {
+          type: 'TANG_GIAM_FONT_SIZE',
+          payload: 5
+        }
+        dispatch(action)
+      }}>+</button>
+      <button className='btn btn-success' onClick = {() => {
+        const action = {
+          type: 'TANG_GIAM_FONT_SIZE',
+          payload: -5
+        }
+        dispatch(action)
+      }}>-</button>
+    </div>
+  )
+}
+
+export default DemoUseRedux

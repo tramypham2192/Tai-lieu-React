@@ -1,0 +1,46 @@
+Tao folder UseCallbackDemo trong folder HookDemo -> tao file UseCallbackDemo.jsx
+
+a) rafce, Enter de lay frame code san
+b) Vao HomeTemplate de tao link den component nay:
+
+c) Vao index.js de tao route cho component nay:
+<Route path='demo-usecallback' element={<UseCallbackDemo />}></Route>
+
+d) Tao component Comment.jsx (Vi du nay la post 1 tam anh va cho user comment duoi tam anh)
+File Comment.jsx: (file nay o trong folder UseCallbackDemo)
+import React, {memo} from 'react'
+
+const Comment = (props) => {
+  return (
+    <div>
+        <textarea></textarea> <br />
+        <button>Gui comment</button>
+    </div>
+  )
+}
+
+export default Comment
+
+e) Code file UseCallbackDemo.jsx:
+import React, { useState } from 'react'
+
+const UseCallbackDemo = () => {
+  let [like, setLike] = useState(1);
+  return (
+    <div className='m-5'>
+        Like: {like} ❤️
+        <br />
+        <span style={{cursor: 'pointer', color: 'red', fontSize: 35}}
+        onClick={() => {
+            setLike(like + 1)
+        }}>❤️</span>
+        <br />
+        <br />
+        <Comment like={like} />
+    </div>
+  )
+}
+
+export default UseCallbackDemo
+-----------------------------------------------
+chua hoc xong -> xem video hoc not

@@ -1,0 +1,105 @@
+Trong folder reactfe73/src/HookDemo, tao folder UseEffectDemo -> tao file UseEffectDemo.jsx
+
+B1: Set up
+
+a) rafce, Enter de lay frame code san
+b) Vao file index.js, tao route cho useEffectDemo:
+<Route path='demo-useeffect' element={<UseEffectDemo />}></Route>
+c) Vao file HomeTemplate, tao link den useEffectDemo:
+<div className="dropdown">
+    <button className="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">Hooks</button>
+        <ul className="dropdown-menu">
+            <li><NavLink className="dropdown-item" to="demo-usestate" >Use State</NavLink></li>
+            <li><NavLink className="dropdown-item" to="demo-effect" >Use effect</NavLink></li>
+        </ul>
+</div>
+
+------------------------------------------------------
+B2: Tao useEffect cho viec call API
+
+Binh thuong thi useEffect duoc dung vao 2 viec:
+- truoc khi render
+- sau khi render, nghia la call API xong roi
+
+Vi du cho viec dung useEffect voi call API:
+
+1) Tao useState:
+//state nay la truoc khi call API, chi co 1 cai picture nay. Sau khi call API va dung useEffect thi
+//se hien thi list cac shoes ra
+const [number, setNumber] = useState(1);
+const [arrProduct, setArrProduct] = useState([
+    {id: 1, name: 'product 1', image: 'https://picsum.photos/200/200', price: 1000}
+])
+
+2) code function de render product tu API ra giao dien
+const renderProduct = () => {
+    return arrProduct.map((prod, index) => {
+        return <div className='col-4' key={index}>
+            <div className='card'>
+                <img src={prod.image} alt='...' />
+                <div className='card-body'>
+                    <p>{prod.name}</p>
+                    <p>{prod.price}</p>
+                </div>
+            </div>
+        </div>
+    })
+  }
+
+3) Binding function renderProduct ra giao dien
+return (
+    <div className='container'>
+        <h3>Number: {number}</h3>
+        <button className='btn btn-success' onClick={() => {
+            setNumber(number + 1)
+        }}>+</button>
+        <h3>Product list</h3>
+        <div className='row'>
+            {renderProduct()}
+        </div>
+    </div>
+  )
+
+4) Code function de call API
+const getApiProduct = async () => {
+    let result = await axios({
+        url: 'https://shop.cyberlearn.vn/api/product',
+        method: 'get'
+    })
+    setArrProduct(result.data.content)
+  }
+
+5) Tao useEffect
+
+O vi du nay, parameter thu 2 cua useEffect la 1 empty array. Binh thuong useEffect duoc su dung cho
+4 truong hop khac nhau. Chi can thay doi parameter thu 2 la useEffect da ra la duoc ung dung
+cho mot truong hop khac.
+
+Binh thuong, 1 giao dien co rat nhieu state khac nhau. Vi du nay minh lam la co 2 state, number
+va arrProduct. 
+Yeu cau bai nay dat ra la state cho number moi khi click vao nut + thi number tang len, nghia la
+state cho number thi thay doi va duoc cap nhat. 
+NHUNG con state cho arrProduct thi ke tu sau khi call API va render duoc ra giao dien roi, 
+thi ko chay lay ham useEffect va ko call lai API nua
+=> De ham useEffect ko bi chay lai moi khi state cua number thay doi, thi parameter thu 2 cua
+useEffect phai la mot empty array
+
+//Day la truong hop 1: parameter thu 2 cua useEffect la mot empty array
+useEffect(() => {
+    /* Truong hop 1:
+    Ham callback tham so thu 1 se chay lan dau tien sau khi giao dien
+    render, chi chay 1 lan duy nhat neu tham so thu 2 la 1 empty array.
+    Truong hop 1 nay dung de call API 
+    */
+   getApiProduct()
+
+Sau khi xong step nay thi la hoan tat task nay.
+
+------------------------------------------------------
+Truong hop 2: useEffect khong co parameter thu 2 -> ham useEffect nay se chay bat cu khi nao
+co 1 state nao do thay doi
+------------------------------------------------------
+Truong hop 3: useEffect co tham so thu 2, tham so nay la 1 state. Khi state nay thay doi, thi
+useEffect se duoc tu dong kich hoat va chay
+
+

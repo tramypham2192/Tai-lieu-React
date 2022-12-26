@@ -1,0 +1,22 @@
+B1: Dung layout 
+B2: Tao hook
+let [fontSize, setFontSize] = useState(16);
+
+B3: Binding hook vao giao dien
+<p style={{fontSize: fontSize}}>lorem ipsum dolor sit amet</p>
+
+B4: Dung onClick de cap nhat state moi cho giao dien. Code function handleChangeFontSize de 
+call moi khi onClick
+
+const handleChangeFontSize = (fSize) => {
+        let newFontSize = fontSize + fSize;
+        setFontSize();
+
+}
+
+ <button className='btn btn-success mx-2' onClick={() => {
+            handleChangeFontSize(5);
+        }}>+</button>
+        <button className='btn btn-success mx-2' onClick={() => {
+            handleChangeFontSize(-5);
+        }}>-</button>
