@@ -1,0 +1,30 @@
+Nguyen ly cua redux:
+ 
+B1: tao reducer de chua cac state:
+a) reducer co 2 parameter la state va action:
+state neu la 1 cai array hoac object dai', thi nen viet rieng cai array va object ra truoc
+roi moi viet kieu export const tenReducer = (state = tenArray/tenObject, action) => {return state}
+action la cai hanh dong, vi du onClick de lam thay doi state.
+b) nen chon loai data cho state la object, array hay tuy, mien lam sao de code toi uu
+c) export cai reducer nay de lat nua component lay props tu no ve.
+
+B2: connect giua component voi redux
+
+B3: mapStateToProps de lay reducer ve 
+Luu y quan trong: neu tach ra nhieu file reducer (ko phai chi dung 1 file configureStore) thi
+phai vao file configureStore import cai file reducer vao VA trong phan export const store .. reducer phai
+call cai reducer do. Vi du:
+import {configureStore} from '@reduxjs/toolkit';
+import { BurgerReducer } from './reducer/BurgerReducer';
+export const store = configureStore({
+    reducer: {
+        //tao state so luong thuc an moi loai
+        BurgerReducer // neu ko call o day thi se bi undefined khi console.log ra
+    }
+})
+B4: bien state vua lay ve thanh props cho component:
+let {ten-cua-state-o-trong-reducer} = this.props;
+
+B5: binding cai props vua lay ve ra giao dien
+
+B6: Dung action va payload de cap nhat state

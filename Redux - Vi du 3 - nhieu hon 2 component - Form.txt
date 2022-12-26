@@ -1,0 +1,139 @@
+Trong folder DemoRedux, tao folder BaiTapQLND (Quan ly nguoi dung)
+-> tao file BaiTapQLND.jsx va file TableNguoiDung.jsx trong folder nay
+
+rcredux de lay frame layout san, nho xoa export va mapDispatchToProps
+
+-> 
+B1: tao giao dien cho 2 file
+
+--------------------------------------------------
+B2: Vao file configStore, tao state cho array nguoi dung trong store redux
+
+ arrNguoiDung: (state = [], action) => {
+            switch(action.type){
+                default: return state;
+            }
+        }
+Vao Redux dev tool, se thay trong tab state co 1 array
+
+----------------------------
+Tuy nhien, neu co 30 state thi de trong 1 file configStore se la qua dai -> phai tach file
+-> tao folder reducers trong folder redux -> tao file arrNguoiDungReducer.jsx
+
+File arrNguoiDungReducer.jsx:
+export const arrNguoiDungReducer = (state = [], action) => {
+    switch(action.type){
+        default: return state;
+    }
+}
+
+Sau do, vao lai file configStore de import arrNguoiDungReducer nhu sau:
+import {configureStore} from '@reduxjs/toolkit';
+import { arrNguoiDungReducer } from './reducers/arrNguoiDungReducer';
+
+export const store = configureStore({
+    reducer: {
+        //Cac state cua ung dung dat het tai day
+        //tao state fontSize
+        // fontSizeState: (state = 16, action) => {
+        //     if (action.type == 'TANG_GIAM_FONT_SIZE'){
+        //         state = state + action.payload;
+        //     }
+        //     return state;
+        // },
+        fontSizeState: (state = 16, action) => {
+            switch (action.type){
+                case 'TANG_GIAM_FONT_SIZE': {
+                    state = state + 1;
+                    return state;
+                }
+                default: return state
+            }
+        },
+        imgSrcReducer: (state= './img/products/red-car.jpg', action) => {
+            switch(action.type){
+                case 'CHANGE_COLOR': {
+                    state = action.payload;
+                    return state;
+                }
+                default: return state;
+            }
+        },
+        arrNguoiDungReducer: arrNguoiDungReducer
+    }
+})
+
+--------------------------------------------------
+B3: Dung mapStateToProps de lay state ve cho component
+
+File TableNguoiDung.jsx:
+const mapStateToProps = (state) => ({
+  arrNguoiDungReducer: state.arrNguoiDungReducer
+})
+
+--------------------------------------------------
+B4: Binding props vua lay duoc tu state lay tu store redux vao component TableNguoiDung
+
+let {arrNguoiDungReducer} = this.props;
+
+<tbody>
+            {arrNguoiDungReducer.map((nd, index) => {
+              return <tr key={index}>
+                <td>{nd.taiKhoan}</td>
+                <td>{nd.matKhau}</td>
+              </tr>
+            })}
+        </tbody>
+
+--------------------------------------------------
+B5: Code function handleSubmit va dung onSubmit={this.handleSubmit} trong the form trong
+file BaiTapQLND
+
+- Code function handleSubmit:
+handleSubmit = (e) => {
+        e.preventDefault();
+        let taiKhoan = document.getElementById('taiKhoan').value;
+        let matKhau = document.getElementById('matKhau').value;
+        let nguoiDung = {taiKhoan, matKhau};
+        //tao action de cap nhat state moi len reducer
+        const action = {
+            type: 'THEM_NGUOI_DUNG',
+            payload: nguoiDung
+        }
+        //dung dispatch de dua state moi len reducer
+        this.props.dispatch(action)
+    }
+
+- Dung onSubmit trong the form:
+<form className='form' onSubmit={this.handleSubmit}>
+
+--------------------------------------------------
+B6: cap nhat state trong reducer tu dispatch tu component gui len
+
+export const arrNguoiDungReducer = (state = stateDefault, action) => {
+    switch(action.type){
+        case 'THEM_NGUOI_DUNG': {
+            state.push(action.payload);
+            return state;
+        }
+        default: return state;
+    }
+}
+
+Sau khi xong step nay thi thay la ke ca sau khi submit va them nguoi dung, trong Redux dev tool
+co hien thi array bao gom ca nguoi dung moi them vao, nhung giao dien lai ko hien thi
+nguoi dung moi them vao.
+LY DO:
+Boi vi state van nam o memory address cu, nen khi push them nguoi dung moi vao, tinh immutable
+ko cho phep thay doi gia tri cua state o do.
+-> Doi voi state ma la object, array, thi khi thay doi state, dau tien phai clone
+de co new address cho state. Sau do moi thay doi state
+export const arrNguoiDungReducer = (state = stateDefault, action) => {
+    switch(action.type){
+        case 'THEM_NGUOI_DUNG': {
+            state.push(action.payload);
+            return [...state];
+        }
+        default: return state;
+    }
+}

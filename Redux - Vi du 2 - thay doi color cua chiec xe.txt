@@ -1,0 +1,191 @@
+B1: Tao file BaiTapChonXe.jsx trong folder DemoRedux
+
+Chi can type rcredux, Enter thi se co frame san cho file redux -> nho' phai xoa chu
+export cho ten class BaiTapChonXe vi minh chi can export cho 
+connect(mapStateToProps, mapDispatchToProps)(BaiTapChonXe) thoi. Xoa ca cho
+const mapDispatchToProps di vi cach nay it duoc dung
+
+import React, { Component } from 'react'
+import { connect } from 'react-redux'
+
+class BaiTapChonXe extends Component {
+  render() {
+    return (   
+        <div>
+            <h3>BaiTapChonXe</h3>
+            <div className='row'>
+                <div className='col-6'>
+                    <img src='./img/imgRedCar.jpg' className='w-100' alt='...' />
+                </div>
+                <div className='col-6'>
+                    <button className='btn btn-danger mx-3'>Red</button>
+                    <button className='btn btn-secondary mx-3'>Silver</button>
+                    <button className='btn btn-primary mx-3'>Steel</button>
+                    <button className='btn btn-dark mx-3'>Black</button>
+                </div>
+            </div>
+        </div>
+        )
+  }
+}
+
+const mapStateToProps = (state) => ({})
+
+export default connect(mapStateToProps, mapDispatchToProps)(BaiTapChonXe)
+------------------------------------------------
+B2: Vao file configStore, tao state cho anh cua chiec xe
+import {configureStore} from '@reduxjs/toolkit';
+
+export const store = configureStore({
+    reducer: {
+        //Cac state cua ung dung dat het tai day
+        fontSizeState: (state = 16, action) => {
+            switch (action.type){
+                case 'TANG_GIAM_FONT_SIZE': {
+                    state = state + 1;
+                    return state;
+                }
+                default: return state
+            }
+        },
+        imgSrcReducer: (state= './img/imgRedCar.jpg', action) => {
+            return state;
+        }
+    }
+})
+
+------------------------------------------------
+B3: Dung function mapStateToProps de lay state tu store redux vao component BaiTapChiecXe
+
+const mapStateToProps = (state) => ({
+    imgSrcReducer: state.imgSrcReducer
+})
+- thu console.log(this.props) xem co lay duoc state tu redux ra chua. Boi vi sau step nay thi state
+cua store redux da tro thanh props cua component nay roi
+
+------------------------------------------------
+B4: Binding state anh xe vao component BaiTapChiecXe
+
+Sau step 3 thi minh da co state anh xe tro thanh props cua component BaiTapChiecXe roi, nen minh
+chi can binding vao phan src cua the img nhu sau:
+<img src={imgSrcReducer} className='w-100' alt='...' />
+
+import React, { Component } from 'react'
+import { connect } from 'react-redux'
+
+class BaiTapChonXe extends Component {
+  render() {
+    return (   
+        <div>
+            <h3>BaiTapChonXe</h3>
+            <div className='row'>
+                <div className='col-6'>
+                    <img src={imgSrcReducer} className='w-100' alt='...' />
+                </div>
+                <div className='col-6'>
+                    <button className='btn btn-danger mx-3'>Red</button>
+                    <button className='btn btn-secondary mx-3'>Silver</button>
+                    <button className='btn btn-primary mx-3'>Steel</button>
+                    <button className='btn btn-dark mx-3'>Black</button>
+                </div>
+            </div>
+        </div>
+        )
+  }
+}
+
+const mapStateToProps = (state) => ({
+    imgSrcReducer: state.imgSrcReducer
+})
+
+export default connect(mapStateToProps, mapDispatchToProps)(BaiTapChonXe)
+
+------------------------------------------------
+B5: Dung onClick va dispatch de gui state moi len store redux
+
+5a) onClick
+Vi o day co nhieu button nen se code rieng 1 function handleChangeColor de ket noi
+function nay voi onClick
+
+import React, { Component } from 'react'
+import { connect } from 'react-redux'
+
+class BaiTapChonXe extends Component {
+    handleChangeColor = (color) => {
+        let imgSrc = `./img/img${color}Car.jpg`;
+    }
+  render() {
+    return (   
+        <div>
+            <h3>BaiTapChonXe</h3>
+            <div className='row'>
+                <div className='col-6'>
+                    <img src={imgSrcReducer} className='w-100' alt='...' />
+                </div>
+                <div className='col-6'>
+                    <button className='btn btn-danger mx-3' onClick={() => {
+                        this.handleChangeColor('Red');
+                    }}>Red</button>
+                    <button className='btn btn-secondary mx-3' onClick={() => {
+                        this.handleChangeColor('Silver')
+                    }}>Silver</button>
+                    <button className='btn btn-primary mx-3' onClick={() => {
+                        this.handleChangeColor('Steel')
+                    }}>Steel</button>
+                    <button className='btn btn-dark mx-3' onClick={() => {
+                        this.handleChangeColor('Black')
+                    }}>Black</button>
+                </div>
+            </div>
+        </div>
+        )
+  }
+}
+
+const mapStateToProps = (state) => ({
+    imgSrcReducer: state.imgSrcReducer
+})
+
+export default connect(mapStateToProps, mapDispatchToProps)(BaiTapChonXe)
+
+---------------------------------
+5b) tao ra action trong function handleChangeColor de ket noi voi onClick
+
+handleChangeColor = (color) => {
+        let imgSrc = `./img/img${color}Car.jpg`;
+        //tao ra action
+        const action = {
+            type: 'CHANGE_COLOR',
+            payload: imgSrc
+        }
+    }
+
+---------------------------------
+5c) dispatch len store redux
+handleChangeColor = (color) => {
+        let imgSrc = `./img/img${color}Car.jpg`;
+        //tao ra action
+        const action = {
+            type: 'CHANGE_COLOR',
+            payload: imgSrc
+        }
+        //dispatch len store redux
+        this.props.dispatch(action)
+    }
+
+---------------------------------
+5d) cap nhat state trong store redux tu dispatch tu component BaiTapChiecXe
+
+Trong file configStore:
+imgSrcReducer: (state= './img/products/red-car.jpg', action) => {
+            switch(action.type){
+                case 'CHANGE_COLOR': {
+                    state = action.payload;
+                    return state;
+                }
+                default: return state;
+            }
+        }
+
+Sau step nay thi da hoan thanh task. Dung redux dev tool de xem state bien doi nhu the nao
+

@@ -1,0 +1,226 @@
+Xem code mau o reactfe73/src/Pages/DemoRedux
+doc: https://redux-toolkit.js.org/
+
+B1: SET UP
+Install Redux Dev Tool: https://chrome.google.com/webstore/detail/redux-devtools/lmhkpmbekcpmknklioeibfkpmmfibljd?hl=en
+
+------------------------------------------------
+Tao folder DemoRedux -> tao file DemoRedux.jsx
+Vao index.js:
+- them route cho DemoRedux:
+<Route path='redux' element={<DemoRedux />}></Route>
+
+- import:
+import { Provider } from 'react-redux'
+import { store } from './redux/configureStore';
+
+- dung the Provider bao quanh elements:
+Neu chi co 1 file jsx (1 route la trang Home thoi:
+const root = ReactDOM.createRoot(document.getElementById('root'));
+root.render(
+  <Provider store={store}>
+    <React.StrictMode>
+      <App />
+    </React.StrictMode>
+  </Provider>
+);
+
+Neu co nhieu file jsx (nhieu route):
+root.render(
+  <>
+    <Provider store={store}>
+      <BrowserRouter>
+        <Routes>
+          <Route path='' element={<HomeTemplate />}>
+            <Route index element={<Home />} ></Route>
+            <Route path='home' element={<Home />} ></Route>
+            <Route path='register' element={<Register />} ></Route>
+            <Route path='login' element={<Login />} ></Route>
+            <Route path='btgiohang' element={<BaiTapGioHang />} ></Route>
+            <Route path='form' element={<ReactForm />} ></Route>
+            <Route path='reactlifecycle' element={<ReactLifeCycle />}></Route>
+            {/* <Route path='*' element={<Page404 />}></Route> */}
+            <Route path='*' element={<Navigate to="" />}></Route>
+            <Route path='redux' element={<DemoRedux />}></Route>
+            <Route path='demo-usestate' element={<UseStateDemo />}></Route>
+            <Route path='demo-useeffect' element={<UseEffectDemo />}></Route>
+            <Route path='demo-usecallback' element={<UseCallbackDemo />}></Route>
+          </Route>
+
+        </Routes>
+      </BrowserRouter>
+    </Provider>
+  </>
+
+
+Vao HomeTemplate them vao NavLink cho Redux:
+<NavLink className={({isActive})=> isActive ? 'nav-link bg-white text-dark' : 'nav-link' } to='/redux'>Redux</NavLink>
+
+------------------------------------------------
+Cai dat Redux toolkit:
+npm i @reduxjs/toolkit
+De dung duoc redux trong React:
+npm i react-redux
+
+------------------------------------------------
+B2: TAO GIAO DIEN
+
+Lam bai DemoTangGiamFontSize bang Redux:
+
+Tao file DemoTangGiamFontSize.jsx
+
+import React, { Component } from 'react'
+
+export default class DemoTangGiamFoztSize extends Component {
+  render() {
+    return (
+      <div>
+        <h3>Tang giam font size</h3>
+        <p>lorem ipsum lorem ipsum</p>
+        <button className='btn btn-success mx-2'>tang size</button>
+        <button className='btn btn-success'>giam size</button>
+      </div>
+    )
+  }
+}
+
+File DemoRedux.jsx:
+import React, { Component } from 'react'
+import DemoTangGiamFoztSize from './DemoTangGiamFoztSize'
+
+export default class DemoRedux extends Component {
+  render() {
+    return (
+      <div className='container'>
+        <DemoTangGiamFoztSize />
+      </div>
+    )
+  }
+}
+
+------------------------------------------------
+Buoc 3: TAO STORE REDUX
+
+B1: Tao folder redux trong folder src -> tao file configStore.jsx
+
+B2: Vao file index.js de cau hinh redux store
+
+File configStore.jsx:
+import {configureStore} from '@reduxjs/toolkit';
+
+export const store = configureStore({
+    reducer: {
+        //Cac state cua ung dung dat het tai day
+        //tao state fontSize
+        fontSizeState: (state = 16, action) => {
+            return state;
+        },
+        imgState: (state= './img/products/red-car.jpg', action) => {
+            return state;
+        }
+    }
+})
+
+------------------------------------------------
+B4: LAY STATE TU STORE REDUX VE  
+
+Component DemoTangGiamFontSize lay state tu store redux ve
+
+Vao file DemoTangGiamFontSize, import nhu sau de tao ra 1 component duoc ket noi voi
+redux:
+import {connect} from 'react-redux';
+- Tao ra 1 component co giao dien giong het giao dien cua DemoTangGiamFontSize
+va component nay lay duoc state tu store redux:
+const DemoFontSizeRedux = connect()(DemoTangGiamFontSize)
+
+- Sau khi da tao ra component nay roi thi minh ko can dung component cu nua, do vay,
+ko export default class DemoTangGiamFontSize nua ma se la export default DemoFontSizeRedux
+const DemoFontSizeRedux = connect()(DemoTangGiamFontSize);
+export default DemoFontSizeRedux;
+
+ - code function de lay state tu redux ve component DemoFontSizeRedux
+const mapStateToProps = (state) => {
+  //lay state tu redux ve de bien thanh props cua DemoFontSizeRedux
+  return {
+    fSixe: state.fontSizeState
+  }
+}
+
+- Copy paste ten function va cho vao phan connect() de component DemoFontSizeRedux co
+mot prop la fSize co gia tri la 16:
+const DemoFontSizeRedux = connect(mapStateToProps)(DemoTangGiamFontSize);
+
+------------------------------------------------
+B5: Binding prop vua lay tu state lay tu store redux vao giao dien
+
+Phai them let {fSize) = this.props vao trong render() trong file DemoFontSizeRedux roi moi binding.
+------------------------------------------------
+B6: Component DemoFontSizeRedux lam thay doi state tren store redux
+
+Dung onClick phia trong tag button:
+- tao ra 1 object action co type, payload. Dat ten cho type, vi du 'TANG_GIAM_FONT_SIZE'. Payload la du lieu
+ma component nay gui den store redux. Vi du o day muon moi lan click vao button tang
+font size thi tang font size len 1, nen se de payload: 1
+- gui du lieu len store redux bang this.props.dispatch
+
+<button className='btn btn-success mx-2' onClick={() => {
+          //tao object action
+          const action = {
+            type: 'TANG_GIAM_FONT_SIZE',
+            payload: 1
+          }
+          //Gui du lieu len redux bang this.props.dispatch
+          this.props.dispatch(action);
+        }}>tang size</button>
+
+------------------------------------------------
+B7: Store redux phai co tham so action va kiem tra action type de khi component
+DemoFontSizeRedux gui dispatch len thi store redux biet la state nao can thay doi gia tri
+
+File configStore.jsx:
+import {configureStore} from '@reduxjs/toolkit';
+
+export const store = configureStore({
+    reducer: {
+        //Cac state cua ung dung dat het tai day
+        //tao state fontSize
+        fontSizeState: (state = 16, action) => {
+            if (action.type == 'TANG_GIAM_FONT_SIZE'){
+                state = state + action.payload;
+            }
+            return state;
+        },
+        imgState: (state= './img/products/red-car.jpg', action) => {
+            return state;
+        }
+    }
+})
+
+LUU Y:
+Neu co nhieu state thi dung switch case, ko dung if else:
+export const store = configureStore({
+    reducer: {
+        //Cac state cua ung dung dat het tai day
+        //tao state fontSize
+        // fontSizeState: (state = 16, action) => {
+        //     if (action.type == 'TANG_GIAM_FONT_SIZE'){
+        //         state = state + action.payload;
+        //     }
+        //     return state;
+        // },
+        fontSizeState: (state = 16, action) => {
+            switch (action.type){
+                case 'TANG_GIAM_FONT_SIZE': {
+                    state = state + 1;
+                    return state;
+                }
+                default: return state
+            }
+        },
+        imgState: (state= './img/products/red-car.jpg', action) => {
+            return state;
+        }
+    }
+})
+
+Sau khi xong step nay, thi khi click vao button tang font size, da thay font size co the tang len.
