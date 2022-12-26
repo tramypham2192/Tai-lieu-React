@@ -1,0 +1,22 @@
+Neu sau khi npx create-react-app ten_app ma bi bao loi version npm, thi check note trong
+file create react app trong folder Self_Study/frontend/React/create react app
+
+-Con neu van bi loi, ma dang dung Windows OS thi thu restart may vi co the may
+can phai update, roi sau do cai lai npx ...
+
+----------------------------------------------------------------------------
+
+- Muon dung Bootstrap thi sau khi cai extension bootstrap 5 trong vs code
+=> phai vao file index.html trong folder public cua project React chu ko phai tu 
+tao file index.html. Roi bs5, an Tab => search google cdn bootstrap, kiem tra 
+version xem trong file html link dung version chua, neu chua dung version moi nhat
+cua bootstrap thi phai sua lai version trong link href moi duoc.
+
+----------------------------------------------------------------------------
+Neu gap loi nay: react-script is not recognized as an internal or external command
+
+Solution:
+Xem lai ki da dung folder chua project chua, ls cho den khi nao ko con folder con nao thi thoi
+Ngoai ra, phai xoa cac node_modules folder cua cac folder phia ben ngoai di
+Neu co the thi click chuot phai vao file package.json de xem cai folder nao la folder dang chua
+project (nhung tot nhat la van ne ls den khi ko con folder con nao nua thi thoi)

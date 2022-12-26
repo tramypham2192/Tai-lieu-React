@@ -1,0 +1,173 @@
+Dau tien la dan layout bang Bootstrap, SCSS, ...
+B1: xac dinh state nen la gi - string, boolean, object, array, hay jsx. Vi du nhu
+trong bai nay thi nen de state la 1 object trong array data 
+-> dat state la 1 object bat ky trong array data (state nay dat o ngoai ham render,
+thuong la o dong duoi dong declare class)
+
+B2: dat destructuring trong ham render, cac thuoc tinh trong dau {} la cac thuoc
+tinh cua object trong array data
+
+B3: binding cac gia tri vao JSX trong ham render de render cac gia tri co state
+thay doi nay ra giao dien moi khi click vao button View detail
+---------------------------------------------------------------------------------
+import React, { Component } from 'react'
+const data = [
+  { "maSP": 1, "tenSP": "VinSmart Live", "manHinh": "AMOLED, 6.2, Full HD+", "heDieuHanh": "Android 9.0 (Pie)", "cameraTruoc": "20 MP", "cameraSau": "Chính 48 MP & Phụ 8 MP, 5 MP", "ram": "4 GB", "rom": "64 GB", "giaBan": 5700000, "hinhAnh": "./img/vsphone.jpg" },
+  { "maSP": 2, "tenSP": "Meizu 16Xs", "manHinh": "AMOLED, FHD+ 2232 x 1080 pixels", "heDieuHanh": "Android 9.0 (Pie); Flyme", "cameraTruoc": "20 MP", "cameraSau": "Chính 48 MP & Phụ 8 MP, 5 MP", "ram": "4 GB", "rom": "64 GB", "giaBan": 7600000, "hinhAnh": "./img/meizuphone.jpg" },
+  { "maSP": 3, "tenSP": "Iphone XS Max", "manHinh": "OLED, 6.5, 1242 x 2688 Pixels", "heDieuHanh": "iOS 12", "cameraSau": "Chính 12 MP & Phụ 12 MP", "cameraTruoc": "7 MP", "ram": "4 GB", "rom": "64 GB", "giaBan": 27000000, "hinhAnh": "./img/applephone.jpg" }
+]
+export default class ComponentCon extends Component {
+  state = {
+    spChiTiet :   { "maSP": 3, "tenSP": "Iphone XS Max", "manHinh": "OLED, 6.5, 1242 x 2688 Pixels", "heDieuHanh": "iOS 12", "cameraSau": "Chính 12 MP & Phụ 12 MP", "cameraTruoc": "7 MP", "ram": "4 GB", "rom": "64 GB", "giaBan": 27000000, "hinhAnh": "./img/applephone.jpg" }
+  }
+  renderPhone = () => {
+    return data.map((item, index) => {
+      return <div className='col-4 mt-2' key={index}>
+              <div className='card'>
+                <img src='./img/vsphone.jpg' alt='' className='w-100' height={450} style={{objectFit:'cover'}} />
+                <div className='card-body'>
+                  <h3>{item.tenSP}</h3>
+                  <p>{item.giaBan}</p>
+                  <button className='btn btn-dark'>View detail</button>
+                </div>
+              </div>
+      </div>
+    })
+  }
+  render() {
+    const {maSP, tenSP, hinhAnh, cameraSau, cameraTruoc, giaBan, heDieuHanh, manHinh, ram, rom} = this.state.spChiTiet;
+    return (
+      <div className='container'>
+        <h3>Product List</h3>
+        <div className='row'>
+          {this.renderPhone()}
+            {/* <div className='col-4 mt-2'>
+                <div className='card'>
+                    <img src='./img/vsphone.jpg' alt='...' />
+                    <div className='card-body'>
+                        <h3>Phone 1</h3>
+                        <p>3000</p>
+                        <button className='btn btn-dark'>View detail</button>
+                    </div>
+                </div>
+            </div> */}
+        </div>
+        <div className='mt-2'>
+          <div className='row'>
+            <div className='col-4'>
+              <h3>{tenSP}</h3>
+              <img className='w-100' src={hinhAnh} alt='...' height={450} style={{objectFit: 'cover'}} />
+            </div>
+            <div className='col-8'>
+              <h3>Product detail</h3>
+              <table className='table'>
+                <thead>
+                  <tr>
+                    <td>Man hinh</td>
+                    <td>{manHinh}</td>
+                  </tr>
+                  <tr>
+                    <td>He dieu hanh</td>
+                    <td>{heDieuHanh}</td>
+                  </tr>
+                  <tr>
+                    <td>Camera truoc</td>
+                    <td>{cameraTruoc}</td>
+                  </tr>
+                  <tr>
+                    <td>Camera sau</td>
+                    <td>{cameraSau}</td>
+                  </tr>
+                </thead>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    )
+  }
+}
+---------------------------------------------------------------------------------
+B4: dat ham onClick = {() => {this.xemChiTietPhoneDuocClick(item)}} trong tag button
+trong ham renderPhone()
+B5: viet ham xemChiTietPhoneDuocClick = (phoneDuocClickObj){} de setState de lam
+thay doi state
+
+renderPhone = () => {
+    return data.map((item, index) => {
+      return <div className='col-4 mt-2' key={index}>
+              <div className='card'>
+                <img src='./img/vsphone.jpg' alt='' className='w-100' height={450} style={{objectFit:'cover'}} />
+                <div className='card-body'>
+                  <h3>{item.tenSP}</h3>
+                  <p>{item.giaBan}</p>
+                  <button className='btn btn-dark' onClick={() => {
+                    this.xemChiTietPhoneDuocClick(item)
+                  }}>View detail</button>
+                </div>
+              </div>
+      </div>
+    })
+  }
+
+  xemChiTietPhoneDuocClick = (phoneDuocClickObj) => {
+    this.setState({
+      spChiTiet: phoneDuocClickObj
+    })
+  }
+
+---------------------------------------------------------------------------------
+NEU MUON DUNG PROPS va tao 1 component rieng cho phone duoc View Detail thi thay doi
+B3 va B4, lam nhu sau:
+
+B1: Trong component cha, can sua 2 cho:
+- o phan return data.map thi chi de la return ra 
+<PhoneCard propCanTruyen={item} /> thay vi code 1 cai card div className="card-body" ...
+- truyen prop la function xemChiTietPhoneDuocClick vao component con
+
+renderPhone = () => {
+    return data.map((item, index) => {
+      return <div className='col-4 mt-2' key={index}>
+              {/* <div className='card'>
+                <img src='./img/vsphone.jpg' alt='' className='w-100' height={450} style={{objectFit:'cover'}} />
+                <div className='card-body'>
+                  <h3>{item.tenSP}</h3>
+                  <p>{item.giaBan}</p>
+                  <button className='btn btn-dark' onClick={() => {
+                    this.xemChiTietPhoneDuocClick(item)
+                  }}>View detail</button>
+                </div>
+              </div> */}
+              <PhoneCard propObject={item} propLaFunctionXemChiTietPhoneDuocClick={this.xemChiTietPhoneDuocClick} />
+      </div>
+    })
+  }
+
+------------------------------------------------
+B2: Tao component PhoneCard.jsx. Trong component con nay thi can truyen 2 props:
+- prop thu nhat la moi object trong array data
+- prop thu hai la function xemChiTietPhoneDuocClick
+
+const {propObject, propLaFunctionXemChiTietPhoneDuocClick} = this.props;
+
+PhoneCard.jsx:
+import React, { Component } from 'react'
+
+export default class PhoneCard extends Component {
+  render() {
+    const {propObject, propLaFunctionXemChiTietPhoneDuocClick} = this.props;
+    return (
+        <div className='card'>
+            <img src={propObject.hinhAnh} alt='' className='w-100' height={450} style={{objectFit:'cover'}} />
+            <div className='card-body'>
+            <h3>{propObject.tenSP}</h3>
+            <p>{propObject.giaBan}</p>
+            <button className='btn btn-dark' onClick={() => {
+                propLaFunctionXemChiTietPhoneDuocClick(propObject)
+            }}>View detail</button>
+            </div>
+      </div>
+    )
+  }
+}
+
